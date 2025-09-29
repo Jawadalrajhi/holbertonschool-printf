@@ -1,0 +1,6 @@
+#!/bin/bash
+DEFAULT_MSG="update"
+git add .
+git commit -m "$DEFAULT_MSG"
+git push
+echo "PUSHED!"
