@@ -1,4 +1,5 @@
 #include "main.h"
+
 /**
  * _printf - produces output according to a format
  * @format: the format string containing characters and specifiers
@@ -33,7 +34,6 @@ _putchar('%');
 count++;
 continue;
 }
-{
 print_func fn = get_printer(format[i]);
 if (fn)
 count += fn(&ap);
