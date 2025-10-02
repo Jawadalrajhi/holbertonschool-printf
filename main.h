@@ -14,10 +14,12 @@ int _putchar(char c);
 
 /* function pointer type and spec table entry */
 typedef int (*print_func)(va_list *ap);
-typedef struct spec {
+typedef struct spec
+{
     char spec;
     print_func fn;
-}spec_t;
+    spec_t;
+}
 
 /* print_char - prints a char from va_list */
 int print_char(va_list *ap);
