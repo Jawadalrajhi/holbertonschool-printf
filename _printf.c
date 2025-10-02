@@ -1,70 +1,46 @@
 #include "main.h"
-#include <stdarg.h>
 
-/**
- * get_printer - returns the function that prints a given specifier
- * @sp: conversion specifier
- *
- * Return: pointer to a printer function, or NULL if not found
- */
-static int (*get_printer(char sp))(va_list)
-{
-	if (sp == 'c')
-		return (print_char);
-	if (sp == 's')
-		return (print_string);
-	if (sp == '%')
-		return (print_int);
-	return (NULL);
-}
+/* minimal printf: handles %c, %s, %% */
+int _printf(const char *format, ...) { va_list ap; int count = 0; size_t i;
 
-/**
- * _printf - produces output according to a format
- * @format: format string containing zero or more directives
- *
- * Return: number of characters printed (excluding the null byte),
- * or -1 on error (e.g. NULL format or trailing '%')
- */
-int _printf(const char *format, ...)
-{
-	va_list ap;
-	int count = 0, i = 0;
-	int (*printer)(va_list);
-
-	if (format == NULL)
-		return (-1);
+	if (!format) return (-1);
 
 	va_start(ap, format);
 
-	while (format[i] != '\0')
+	for (i = 0; format[i]; i++)
 	{
 		if (format[i] != '%')
 		{
 			_putchar(format[i]);
 			count++;
-			i++;
 			continue;
 		}
-		/* we saw a '%' */
-		i++;
-		if (format[i] == '\0')
+
+		i++;                /* move to specifier */
+		if (!format[i])    /* stray '%' at end */
 		{
 			va_end(ap);
 			return (-1);
 		}
-
-		printer = get_printer(format[i]);
-		if (printer != NULL)
-		{
-			count += printer(ap);
-		}
-		else
+		if (format[i] == '%') /* print literal '%' */
 		{
 			_putchar('%');
-			_putchar(format[i]);
-			count += 2;
+			count++;
+			continue;
 		}
-		i++;
+
+		{
+			print_func fn = get_printer(format[i]); /* pick printer */
+			if (fn)
+				count += fn(&ap);                  /* call printer */
+			else
+			{
+				/* unknown spec: print it as-is */
+				_putchar('%');
+				_putchar(format[i]);
+				count += 2;
+			}
+		}
 	}
 
 	va_end(ap);

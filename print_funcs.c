@@ -1,52 +1,57 @@
 #include "main.h"
-#include <stdarg.h>
+#include <unistd.h>
 
-/**
- * print_char - prints a single character
- * @ap: variadic list
- *
- * Return: number of characters printed (1)
- */
-int print_char(va_list ap)
+/* print a single char */
+int print_char(va_list *ap)
 {
-	int c = va_arg(ap, int);
-
-	_putchar(c);
+	int c = va_arg(*ap, int);
+	_putchar((char)c);
 	return (1);
 }
 
-/**
- * print_string - prints a C-string
- * @ap: variadic list
- *
- * Return: number of characters printed
- */
-int print_string(va_list ap)
+/* print a C-string (handles NULL) */
+int print_string(va_list *ap)
 {
-	char *s = va_arg(ap, char *);
-	int i = 0;
+	char *s = va_arg(*ap, char *);
+	int n = 0;
 
-	if (s == NULL)
+	if (!s)
 		s = "(null)";
 
-	while (s[i] != '\0')
+	while (s[n])
 	{
-		_putchar(s[i]);
-		i++;
+		_putchar(s[n]);
+		n++;
 	}
-	return (i);
+	return (n);
 }
 
-/**
- * print_percent - prints a percent sign
- * @ap: variadic list (unused)
- *
- * Return: number of characters printed (1)
- */
-int print_percent(va_list ap)
+/* print a literal '%' */
+int print_percent(va_list *ap)
 {
 	(void)ap;
 	_putchar('%');
 	return (1);
 }
 
+/* static dispatch table */
+static const spec_t table[] = {
+	{ 'c', print_char },
+	{ 's', print_string },
+	{ '%', print_percent },
+	{ '\0', NULL }
+};
+
+/* find printer by specifier */
+print_func get_printer(char c)
+{
+	size_t i = 0;
+
+	while (table[i].spec != '\0')
+	{
+		if (table[i].spec == c)
+			return (table[i].fn);
+		i++;
+	}
+	return (NULL);
+}
