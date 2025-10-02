@@ -1,7 +1,10 @@
 #include "main.h"
 
 /* minimal printf: handles %c, %s, %% */
-int _printf(const char *format, ...) { va_list ap; int count = 0; size_t i;
+int _printf(const char *format, ...)
+{
+       	va_list ap; int count = 0; 
+	size_t i;
 
 	if (!format) return (-1);
 
