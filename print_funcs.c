@@ -1,39 +1,48 @@
+
 #include "main.h"
-#include <unistd.h>
 
 /**
- * print_char - Print a character from a va_list.
- * @ap: pointer to va_list.
- * Return: number of chars printed.
+ * print_char - print a single character (%c)
+ * @ap: pointer to va_list, contains an int promoted char
+ *
+ * Return: number of characters printed (1)
  */
-
-/* print a single char */
 int print_char(va_list *ap)
 {
-	int c = va_arg(*ap, int);
+	int ch = va_arg(*ap, int);
 
-	_putchar((char)c);
+	_putchar((char)ch);
 	return (1);
 }
 
-/* print a C-string (handles NULL) */
+/**
+ * print_string - print a C string (%s)
+ * @ap: pointer to va_list, contains (char *)
+ *
+ * Return: number of characters printed
+ */
 int print_string(va_list *ap)
 {
 	char *s = va_arg(*ap, char *);
-	int n = 0;
+	int i = 0;
 
 	if (!s)
 		s = "(null)";
 
-	while (s[n])
+	while (s[i])
 	{
-		_putchar(s[n]);
-		n++;
+		_putchar(s[i]);
+		i++;
 	}
-	return (n);
+	return (i);
 }
 
-/* print a literal '%' */
+/**
+ * print_percent - print a literal percent sign (%%)
+ * @ap: pointer to va_list (unused)
+ *
+ * Return: number of characters printed (1)
+ */
 int print_percent(va_list *ap)
 {
 	(void)ap;
@@ -41,24 +50,19 @@ int print_percent(va_list *ap)
 	return (1);
 }
 
-/* static dispatch table */
-static const spec_t table[] = {
-	{ 'c', print_char },
-	{ 's', print_string },
-	{ '%', print_percent },
-	{ '\0', NULL }
-};
-
-/* find printer by specifier */
+/**
+ * get_printer - map a specifier to its print function
+ * @c: conversion specifier (e.g. 'c', 's', '%')
+ *
+ * Return: function pointer if known, NULL otherwise
+ */
 print_func get_printer(char c)
 {
-	size_t i = 0;
-
-	while (table[i].spec != '\0')
-	{
-		if (table[i].spec == c)
-			return (table[i].fn);
-		i++;
-	}
-	return (NULL);
+	if (c == 'c')
+		return (print_char);
+	if (c == 's')
+		return (print_string);
+	if (c == '%')
+		return (print_percent);
+	return (0);
 }

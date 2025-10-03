@@ -1,55 +1,59 @@
 #include "main.h"
 
 /**
- * handle_percent - Process a '%' sequence at format[*pi].
- * @fmt: format string.
- * @pi: pointer to current index (advanced past the specifier).
- * @ap: varargs list.
- * Return: number of chars printed, or -1 on error.
+ * handle_percent - process a '%' sequence inside format
+ * @fmt: full format string
+ * @i: pointer to current index (points to char after '%')
+ * @ap: pointer to active va_list
+ *
+ * Return: characters printed for this sequence, or -1 on error
  */
-
-/* handle one specifier after '%' and advance index */
-static int handle_percent(const char *fmt, int *pi, va_list *ap)
+static int handle_percent(const char *fmt, int *i, va_list *ap)
 {
-	int printed = 0;
 	print_func fn;
 
-	if (fmt[*pi] == '\0')
+	/* end of string right after '%' -> error */
+	if (!fmt[*i])
 		return (-1);
 
-	if (fmt[*pi] == '%')
+	/* '%%' prints a single '%' */
+	if (fmt[*i] == '%')
 	{
 		_putchar('%');
-		(*pi)++;
 		return (1);
 	}
 
-	fn = get_printer(fmt[*pi]);
+	/* try to find a printer for %c or %s (or %) */
+	fn = get_printer(fmt[*i]);
 	if (fn)
-		printed += fn(ap);
-	else
-	{
-		_putchar('%');
-		_putchar(fmt[*pi]);
-		printed += 2;
-	}
-	(*pi)++;
-	return (printed);
+		return (fn(ap));
+
+	/* unknown specifier: print '%' then the specifier */
+	_putchar('%');
+	_putchar(fmt[*i]);
+	return (2);
 }
 
-/* minimal printf: supports %c, %s, %% */
+/**
+ * _printf - minimal printf supporting %c, %s and %%
+ * @format: format string to print
+ *
+ * Return: number of characters printed, or -1 on error
+ */
 int _printf(const char *format, ...)
 {
 	va_list ap;
-	int i = 0, count = 0;
-	int r;
+	int i, count;
+	int printed; /* temp for each conversion */
 
 	if (!format)
 		return (-1);
 
 	va_start(ap, format);
+	i = 0;
+	count = 0;
 
-	while (format[i] != '\0')
+	while (format[i])
 	{
 		if (format[i] != '%')
 		{
@@ -59,14 +63,18 @@ int _printf(const char *format, ...)
 			continue;
 		}
 
+		/* we saw '%', move to the specifier char */
 		i++;
-		r = handle_percent(format, &i, &ap);
-		if (r < 0)
+
+		printed = handle_percent(format, &i, &ap);
+		if (printed == -1)
 		{
 			va_end(ap);
 			return (-1);
 		}
-		count += r;
+
+		count += printed;
+		i++; /* move past the specifier we just handled */
 	}
 
 	va_end(ap);
