@@ -71,7 +71,7 @@ int print_percent(va_list *ap);
  *
  * Return: function pointer if found, NULL otherwise
  */
-print_func get_printer(char c);
+print_func get_printer(char spec);
 
 #endif /* MAIN_H */
 
