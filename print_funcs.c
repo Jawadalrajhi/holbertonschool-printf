@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 /**
@@ -51,8 +50,40 @@ int print_percent(va_list *ap)
 }
 
 /**
+ * print_int - print a signed integer (%d, %i)
+ * @ap: pointer to va_list, contains int
+ *
+ * Return: number of characters printed
+ */
+int print_int(va_list *ap)
+{
+	long n = va_arg(*ap, int);
+	int count = 0;
+	long div = 1;
+
+	if (n < 0)
+	{
+		_putchar('-');
+		count++;
+		n = -n;
+	}
+
+	while (n / div >= 10)
+		div *= 10;
+
+	while (div > 0)
+	{
+		_putchar((n / div) % 10 + '0');
+		count++;
+		div /= 10;
+	}
+
+	return (count);
+}
+
+/**
  * get_printer - map a specifier to its print function
- * @c: conversion specifier (e.g. 'c', 's', '%')
+ * @c: conversion specifier (e.g. 'c', 's', '%', 'd', 'i')
  *
  * Return: function pointer if known, NULL otherwise
  */
@@ -64,5 +95,7 @@ print_func get_printer(char c)
 		return (print_string);
 	if (c == '%')
 		return (print_percent);
-	return (0);
+	if (c == 'd' || c == 'i')
+return (print_int);
+return (0);
 }

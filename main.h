@@ -6,28 +6,11 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-/**
- * _printf - prints formatted output to stdout
- * @format: the format string
- *
- * Return: number of characters printed
- */
+/* Core functions */
 int _printf(const char *format, ...);
-
-/**
- * _putchar - writes a single character to stdout
- * @c: the character to print
- *
- * Return: 1 on success, -1 on error
- */
 int _putchar(char c);
 
-/**
- * print_func - typedef for printer functions
- * @ap: argument list
- *
- * Return: number of characters printed
- */
+/* Typedef for printer functions */
 typedef int (*print_func)(va_list *ap);
 
 /**
@@ -37,41 +20,17 @@ typedef int (*print_func)(va_list *ap);
  */
 typedef struct spec
 {
-char spec;
-print_func fn;
+    char spec;
+    print_func fn;
 } spec_t;
 
-/**
- * print_char - prints a char from va_list
- * @ap: argument list
- *
- * Return: number of characters printed
- */
+/* Printers */
 int print_char(va_list *ap);
-
-/**
- * print_string - prints a string from va_list
- * @ap: argument list
- *
- * Return: number of characters printed
- */
 int print_string(va_list *ap);
-
-/**
- * print_percent - prints a percent sign
- * @ap: argument list (unused)
- *
- * Return: number of characters printed
- */
 int print_percent(va_list *ap);
+int print_int(va_list *ap); /* <-- مهم */
 
-/**
- * get_printer - gets the appropriate function for a specifier
- * @c: format specifier character
- *
- * Return: function pointer if found, NULL otherwise
- */
+/* Dispatcher */
 print_func get_printer(char spec);
 
 #endif /* MAIN_H */
-
