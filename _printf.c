@@ -1,24 +1,48 @@
 #include "main.h"
 
-/*
- * Minimal printf clone that supports: %c, %s, %%
- * Fix applied: declare 'fn' at top (C90) and reuse it (no redeclare in loop).
- */
+/* handle one specifier after '%' and advance index */
+static int handle_percent(const char *fmt, int *pi, va_list *ap)
+{
+	int printed = 0;
+	print_func fn;
+
+	if (fmt[*pi] == '\0')
+		return (-1);
+
+	if (fmt[*pi] == '%')
+	{
+		_putchar('%');
+		(*pi)++;
+		return (1);
+	}
+
+	fn = get_printer(fmt[*pi]);
+	if (fn)
+		printed += fn(ap);
+	else
+	{
+		_putchar('%');
+		_putchar(fmt[*pi]);
+		printed += 2;
+	}
+	(*pi)++;
+	return (printed);
+}
+
+/* minimal printf: supports %c, %s, %% */
 int _printf(const char *format, ...)
 {
-	va_list ap;         /* variadic args state */
-	int i = 0;          /* index in format string */
-	int count = 0;      /* total printed chars */
-	print_func fn = NULL; /* declare here (before code) to satisfy C90 */
+	va_list ap;
+	int i = 0, count = 0;
+	int r;
 
-	if (format == NULL)
+	if (!format)
 		return (-1);
 
 	va_start(ap, format);
 
 	while (format[i] != '\0')
 	{
-		/* normal character -> print and move on */
 		if (format[i] != '%')
 		{
 			_putchar(format[i]);
@@ -27,42 +51,14 @@ int _printf(const char *format, ...)
 			continue;
 		}
 
-		/* we saw '%': move to specifier */
 		i++;
-
-		/* stray '%' at end -> error as real printf would be undefined; we return -1 */
-		if (format[i] == '\0')
+		r = handle_percent(format, &i, &ap);
+		if (r < 0)
 		{
 			va_end(ap);
 			return (-1);
 		}
-
-		/* "%%" -> print one '%' */
-		if (format[i] == '%')
-		{
-			_putchar('%');
-			count++;
-			i++;
-			continue;
-		}
-
-		/* pick printer for this specifier (no re-declaration of fn here) */
-		fn = get_printer(format[i]);
-
-		if (fn != NULL)
-		{
-			/* call the printer; it consumes from va_list and returns printed count */
-			count += fn(&ap);
-		}
-		else
-		{
-			/* unknown specifier -> print it raw as %X */
-			_putchar('%');
-			_putchar(format[i]);
-			count += 2;
-		}
-
-		i++; /* move past specifier */
+		count += r;
 	}
 
 	va_end(ap);
