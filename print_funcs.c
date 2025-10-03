@@ -1,6 +1,12 @@
 #include "main.h"
 #include <unistd.h>
 
+/**
+ * print_char - Print a character from a va_list.
+ * @ap: pointer to va_list.
+ * Return: number of chars printed.
+ */
+
 /* print a single char */
 int print_char(va_list *ap)
 {

@@ -1,5 +1,13 @@
 #include "main.h"
 
+/**
+ * handle_percent - Process a '%' sequence at format[*pi].
+ * @fmt: format string.
+ * @pi: pointer to current index (advanced past the specifier).
+ * @ap: varargs list.
+ * Return: number of chars printed, or -1 on error.
+ */
+
 /* handle one specifier after '%' and advance index */
 static int handle_percent(const char *fmt, int *pi, va_list *ap)
 {
