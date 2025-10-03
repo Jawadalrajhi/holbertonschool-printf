@@ -5,6 +5,7 @@
 int print_char(va_list *ap)
 {
 	int c = va_arg(*ap, int);
+
 	_putchar((char)c);
 	return (1);
 }
