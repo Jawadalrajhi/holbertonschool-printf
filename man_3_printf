@@ -1,4 +1,4 @@
-.TH _PRINTF 3 "29-09-2025"
+.TH _PRINTF 3 "October 4, 2025"
 .SH NAME
 _printf \- print formatted output to stdout
 .SH SYNOPSIS
@@ -20,4 +20,5 @@ _printf("Number: %d\n", 42);
 _printf("Number: %i\n", -42);
 .SH NOTES
 Allowed functions: write, malloc, free, and the stdarg macros.
-This man page describes everything _printf can do so far for Task 0 and Task 1.
+This man page describes everything _printf can do so far for Tasks 0, 1, 3, 4, 7, 14, and 15.
+
