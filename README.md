@@ -1,5 +1,6 @@
-==========================================================================
-                            Holberton School - _printf Project
+================================== Holberton School - _printf Project ========================================
+
+                            
 
 Contributors: Jawad & Alanoud
 
